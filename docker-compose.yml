@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/pinewoodstoredb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=pinewoodstoreadmin
+      - SPRING_DATASOURCE_PASSWORD=pinewoodstoreadmin2025
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+     
+    volumes:
+      - ./templates:/app/templates  # For Thymeleaf template hot-reload
+      - ./data:/app/data
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_DATABASE=pinewoodstoredb
+      - MYSQL_USER=pinewoodstoreadmin
+      - MYSQL_PASSWORD=pinewoodstoreadmin2025
+      - MYSQL_ROOT_PASSWORD=rootpinewoodstoreadmin2025
+    ports:
+      - "3307:3306"  # Exposed for external access if needed
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "pinewoodstoreadmin", "-ppinewoodstoreadmin2025"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  mysql_data:
