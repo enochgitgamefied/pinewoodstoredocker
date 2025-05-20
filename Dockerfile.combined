@@ -1,0 +1,19 @@
+FROM eclipse-temurin:17-jre
+
+# Create directories and set permissions
+RUN mkdir -p /var/log/apps /app && chmod 777 /var/log/apps
+
+WORKDIR /app
+
+# Copy both applications
+COPY pinewoodstore.jar .
+COPY diagapp.jar .
+
+# Install required tools and clean up apt cache
+RUN apt-get update && \
+    apt-get install -y procps net-tools && \
+    rm -rf /var/lib/apt/lists/*
+
+# Startup command that runs both apps
+CMD bash -c "java -jar diagapp.jar --server.port=84 > /var/log/apps/diagapp.log 2>&1 & \
+    java -jar pinewoodstore.jar > /var/log/apps/pinewoodstore.log 2>&1"
