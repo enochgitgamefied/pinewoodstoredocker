@@ -1,19 +1,24 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
+  pinewood_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.combined
     ports:
-      - "8088:8088"
+      - "8088:8088"  # Main app
+      - "84:84"      # Diag app
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/pinewoodstoredb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=pinewoodstoreadmin
       - SPRING_DATASOURCE_PASSWORD=pinewoodstoreadmin2025
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
-     
+      - API_BASE_URL=http://localhost:8088
+      - API_BASE_URL_DIAG=http://localhost:84
+      - API_BASE_URL_PINEWOODSTORE=http://localhost:8088/welcome
     volumes:
-      - ./templates:/app/templates  # For Thymeleaf template hot-reload
+      - ./logs:/var/log/apps
       - ./data:/app/data
+    restart: unless-stopped
     depends_on:
       mysql:
         condition: service_healthy
@@ -26,7 +31,7 @@ services:
       - MYSQL_PASSWORD=pinewoodstoreadmin2025
       - MYSQL_ROOT_PASSWORD=rootpinewoodstoreadmin2025
     ports:
-      - "3307:3306"  # Exposed for external access if needed
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./db-init:/docker-entrypoint-initdb.d
