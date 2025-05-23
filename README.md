@@ -51,12 +51,12 @@ If you're running PinewoodStore on a **remote server** and want to access it fro
 1. **Edit the `docker-compose.yml` file**
 
 Replace all instances of `localhost` in the `environment` section with the **public IP address** of your remote server:
-
+for Example if your remote server has IP address of 192.168.1.100
 ```yaml
 environment:
-  - API_BASE_URL=http://<your-server-ip>:8088
-  - API_BASE_URL_DIAG=http://<your-server-ip>:84
-  - API_BASE_URL_PINEWOODSTORE=http://<your-server-ip>:8088/welcome
+  - API_BASE_URL=http://192.168.1.100:8088
+  - API_BASE_URL_DIAG=http://192.168.1.100:84
+  - API_BASE_URL_PINEWOODSTORE=http://192.168.1.100:8088/welcome
 ```
 
 2. **Rebuild and restart the containers**
