@@ -89,8 +89,8 @@ PinewoodStore includes a wide range of common and impactful web vulnerabilities 
 | 13 | [Command Injection](https://www.youtube.com/watch?v=z4Xf9LYXc9o&t=714s)                    | ✅                      |
 | 14 | [Request Smuggling](https://www.youtube.com/watch?v=bGwsF3Q3tFs)                           | ✅                      |
 | 15 | [File Upload Vulnerability 1](https://www.youtube.com/watch?v=7AbQ9rpKI74)                 | ✅                      |
-| 16 | [Command Injection](https://www.youtube.com/watch?v=7AbQ9rpKI74)
-| 17 | [HTML Injection](https://www.youtube.com/watch?v=9P4_Wp5VxEY)                 | ✅                      |
+| 16 | [Command Injection](https://www.youtube.com/watch?v=7AbQ9rpKI74)                           | ✅                      |
+| 17 | [HTML Injection](https://www.youtube.com/watch?v=9P4_Wp5VxEY)                              | ✅                      |
 
 > 💡 Use tools like **Burp Suite**, **OWASP ZAP**, or custom payloads to explore and exploit these issues.
 
