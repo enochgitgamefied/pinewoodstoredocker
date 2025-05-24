@@ -39,3 +39,12 @@ CREATE TABLE IF NOT EXISTS `employees` (
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)                   /* Added primary key */
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS review (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product VARCHAR(255),
+    full_name VARCHAR(255),
+    review_text VARCHAR(1000),
+    timestamp TIMESTAMP,
+    user_avatar_url VARCHAR(255)
+);
