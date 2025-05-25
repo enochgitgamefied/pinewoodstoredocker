@@ -80,7 +80,7 @@ PinewoodStore includes a wide range of common and impactful web vulnerabilities 
 | 4  | [External XML Entity (XXE)](https://www.youtube.com/watch?v=e552T0B4hb0&t=270s)            | ✅                      |
 | 5  | [Remote File Inclusion (RFI)](https://www.youtube.com/watch?v=N53OopT6msU)                 | ✅                      |
 | 6  | [Local File Inclusion (LFI)](https://www.youtube.com/watch?v=TfgQJXVT_yk)                  | ✅                      |
-| 7  | Directory Traversal                                                                        | 📋 (Video Coming Soon) |
+| 7  | [Directory Traversal Vulnerability](https://www.youtube.com/watch?v=RZzcDzofTAg)           | ✅                      |
 | 8  | [Remote Code Execution (RCE)](https://www.youtube.com/watch?v=z4Xf9LYXc9o&t=714s)          | ✅                      |
 | 9  | [Server Side JSON Injection](https://www.youtube.com/watch?v=iycTLPaPBD8&t=1079s)          | ✅                      |
 | 10 | [JWT Token Tampering](https://www.youtube.com/watch?v=48k7fSGCFAQ&t=1s)                    | ✅                      |
