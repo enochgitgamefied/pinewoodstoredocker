@@ -10,7 +10,7 @@ INSERT INTO users (username, password, role) VALUES
 ('admin', '$2a$10$somehashedpassword', 'ADMIN');
 
 INSERT INTO `suppliers` (`company_name`, `contact_name`, `email`, `phone`, `address`, `username`, `password`, `business_type`, `account_status`, `last_login`) VALUES
-('Fresh Produce Co.', 'John Smith', 'john@freshproduce.com', '555-0101', '123 Farm Rd, Agricultural Zone', 'freshpro', 'freshpro123', 'Agriculture', 'ACTIVE', '2023-05-15 09:30:00'),
+('Fresh Produce Co.', 'Admin User', 'admin@freshproduce.com', '555-0101', '123 Farm Rd, Agricultural Zone', 'freshpro', 'freshpro123', 'Agriculture', 'ACTIVE', '2023-05-15 09:30:00'),
 ('Tech Gadgets Inc.', 'Sarah Johnson', 'sarah@techgadgets.com', '555-0202', '456 Silicon Valley, Tech City', 'techguru', 'techguru456', 'Technology', 'ACTIVE', '2023-05-16 14:15:00'),
 ('Fashion Trends Ltd.', 'Michael Brown', 'michael@fashiontrends.com', '555-0303', '789 Style Ave, Fashion District', 'trendsetter', 'trendsetter789', 'Retail', 'ACTIVE', '2023-05-14 11:45:00'),
 ('Office Supplies Pro', 'Emily Davis', 'emily@officesupplies.com', '555-0404', '321 Business Park, Downtown', 'officepro', 'officepro321', 'WHOLESALER', 'ACTIVE', '2023-05-17 10:20:00'),
