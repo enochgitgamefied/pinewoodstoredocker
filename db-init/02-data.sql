@@ -10,7 +10,7 @@ INSERT INTO users (username, password, role) VALUES
 ('admin', '$2a$10$somehashedpassword', 'ADMIN');
 
 INSERT INTO `suppliers` (`company_name`, `contact_name`, `email`, `phone`, `address`, `username`, `password`, `business_type`, `account_status`, `last_login`) VALUES
-('Fresh Produce Co.', 'Admin User', 'admin@freshproduce.com', '555-0101', '123 Farm Rd, Agricultural Zone', 'admin', 'freshpro123', 'Agriculture', 'ACTIVE', '2023-05-15 09:30:00'),
+('Fresh Produce Co.', 'John Smith', 'john@freshproduce.com', '555-0101', '123 Farm Rd, Agricultural Zone', 'freshpro', 'freshpro123', 'Agriculture', 'ACTIVE', '2023-05-15 09:30:00'),
 ('Tech Gadgets Inc.', 'Sarah Johnson', 'sarah@techgadgets.com', '555-0202', '456 Silicon Valley, Tech City', 'techguru', 'techguru456', 'Technology', 'ACTIVE', '2023-05-16 14:15:00'),
 ('Fashion Trends Ltd.', 'Michael Brown', 'michael@fashiontrends.com', '555-0303', '789 Style Ave, Fashion District', 'trendsetter', 'trendsetter789', 'Retail', 'ACTIVE', '2023-05-14 11:45:00'),
 ('Office Supplies Pro', 'Emily Davis', 'emily@officesupplies.com', '555-0404', '321 Business Park, Downtown', 'officepro', 'officepro321', 'WHOLESALER', 'ACTIVE', '2023-05-17 10:20:00'),
@@ -29,7 +29,8 @@ INSERT INTO `suppliers` (`company_name`, `contact_name`, `email`, `phone`, `addr
 ('Outdoor Gear', 'Mark Young', 'mark@outdoorgear.com', '555-1717', '852 Adventure Trail, Nature Area', 'outdoorsman', 'outdoorsman852', 'DISTRIBUTOR', 'ACTIVE', '2023-05-08 15:20:00'),
 ('Art Supplies', 'Susan King', 'susan@artsupplies.com', '555-1818', '951 Creative Path, Artsy District', 'artist', 'artist951', 'Retail', 'ACTIVE', '2023-05-23 13:35:00'),
 ('Medical Supplies', 'Paul Scott', 'paul@medicalsupplies.com', '555-1919', '753 Health Way, Medical Center', 'medpro', 'medpro753', 'WHOLESALER', 'ACTIVE', '2023-05-07 16:50:00'),
-('Party Supplies', 'Jessica Green', 'jessica@partysupplies.com', '555-2020', '159 Celebration Blvd, Event Zone', 'partyanimal', 'partyanimal159', 'OTHER', 'ACTIVE', '2023-05-24 10:05:00');
+('Party Supplies', 'Jessica Green', 'jessica@partysupplies.com', '555-2020', '159 Celebration Blvd, Event Zone', 'partyanimal', 'partyanimal159', 'OTHER', 'ACTIVE', '2023-05-24 10:05:00'),
+('System Administration', 'Admin User', 'admin@pinewoodstore.com', '555-9999', '1 Admin Plaza, System District', 'admin', 'Admin@1234', 'OTHER', 'ACTIVE', '2023-05-25 08:00:00');
 
 
 INSERT INTO `sproducts` (`supplier_username`, `name`, `description`, `price`) VALUES
