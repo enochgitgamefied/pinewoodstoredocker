@@ -91,7 +91,9 @@ PinewoodStore includes a wide range of common and impactful web vulnerabilities 
 | 15 | [File Upload Vulnerability 1 (only checks extension)](https://www.youtube.com/watch?v=7AbQ9rpKI74)                 | ✅                      |
 | 16 | [Command Injection](https://www.youtube.com/watch?v=7AbQ9rpKI74)                           | ✅                      |
 | 17 | [HTML Injection](https://www.youtube.com/watch?v=9P4_Wp5VxEY)                              | ✅                      |
-| 18 | [Unsafe Eval allows XSS and HTML injection](https://www.youtube.com/watch?v=zZ_ViE7w914)                              | ✅                      |
+| 18 | [Unsafe Eval allows XSS and HTML injection](https://www.youtube.com/watch?v=zZ_ViE7w914)   | ✅                      |
+| 19 | [SQL Injection Login Bypass](https://www.youtube.com/watch?v=mw2zGawxaM0)                  | ✅                      |
+| 20 | [SQL Union Injection](https://www.youtube.com/watch?v=DV-KR6s32UQ)                         | ✅                      |
 
 > 💡 Use tools like **Burp Suite**, **OWASP ZAP**, or custom payloads to explore and exploit these issues.
 
