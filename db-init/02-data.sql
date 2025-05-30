@@ -72,6 +72,8 @@ INSERT INTO `sproducts` (`supplier_username`, `name`, `description`, `price`) VA
 ('artist', 'Sketch Pad', '50-page premium sketch pad', 12.99),
 ('medpro', 'First Aid Kit', '50-piece first aid kit', 19.99),
 ('medpro', 'Digital Thermometer', 'Fast-reading digital thermometer', 9.99),
+('admin', 'Wireless Earbuds', 'Noise cancelling wireless earbuds', 89.99),
+('admin', 'Smart Watch', 'Fitness tracking smart watch', 149.99),
 ('partyanimal', 'Balloon Set', 'Assorted color balloon set', 6.99),
 ('partyanimal', 'Disposable Plates (50pk)', 'Eco-friendly disposable plates', 12.99);
 
