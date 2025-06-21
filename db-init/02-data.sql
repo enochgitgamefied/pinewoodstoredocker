@@ -9,6 +9,19 @@ INSERT INTO products (name, description, price, is_listed) VALUES
 INSERT INTO users (username, password, role) VALUES
 ('admin', '$2a$10$somehashedpassword', 'ADMIN');
 
+INSERT INTO employees (first_name, last_name, email) VALUES
+('Alice', 'Johnson', 'alice.johnson@example.com'),
+('Bob', 'Smith', 'bob.smith@example.com'),
+('Carol', 'Taylor', 'carol.taylor@example.com'),
+('David', 'Williams', 'david.williams@example.com'),
+('Eva', 'Brown', 'eva.brown@example.com'),
+('Frank', 'Davis', 'frank.davis@example.com'),
+('Grace', 'Miller', 'grace.miller@example.com'),
+('Henry', 'Wilson', 'henry.wilson@example.com'),
+('Isabel', 'Moore', 'isabel.moore@example.com'),
+('Jack', 'Anderson', 'jack.anderson@example.com');
+
+
 INSERT INTO `suppliers` (`company_name`, `contact_name`, `email`, `phone`, `address`, `username`, `password`, `business_type`, `account_status`, `last_login`) VALUES
 ('Fresh Produce Co.', 'John Smith', 'john@freshproduce.com', '555-0101', '123 Farm Rd, Agricultural Zone', 'freshpro', 'freshpro123', 'Agriculture', 'ACTIVE', '2023-05-15 09:30:00'),
 ('Tech Gadgets Inc.', 'Sarah Johnson', 'sarah@techgadgets.com', '555-0202', '456 Silicon Valley, Tech City', 'techguru', 'techguru456', 'Technology', 'ACTIVE', '2023-05-16 14:15:00'),
