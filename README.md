@@ -107,6 +107,7 @@ PinewoodStore includes a wide range of common and impactful web vulnerabilities 
 | -------------- | ------------------------------- |
 | Main App       | `http://localhost:8088`         |
 | Diagnostic API | `http://localhost:84`           |
+| Inventory  API | `http://localhost:85`           |
 | Welcome Page   | `http://localhost:8088/welcome` |
 
 ---

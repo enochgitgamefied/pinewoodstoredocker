@@ -1,0 +1,1262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinewood-Inventory · GitHub</title>
+    <style>
+        :root {
+            --color-text-primary: #24292e;
+            --color-bg-primary: #ffffff;
+            --color-border-primary: #e1e4e8;
+            --color-accent-fg: #0366d6;
+            --color-header-bg: #24292e;
+            --color-header-text: #ffffff;
+            --color-danger-fg: #cf222e;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-primary);
+        }
+
+        .header {
+            background-color: var(--color-header-bg);
+            color: var(--color-header-text);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-logo {
+            fill: currentColor;
+            margin-right: 16px;
+        }
+
+        .header-search {
+            flex-grow: 1;
+            margin: 0 16px;
+        }
+
+        .header-search input {
+            width: 100%;
+            max-width: 500px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 16px;
+        }
+
+        .header-nav a {
+            color: var(--color-header-text);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .repo-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border-primary);
+        }
+
+        .repo-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-right: 16px;
+        }
+
+        .repo-meta {
+            display: flex;
+            gap: 16px;
+            color: #586069;
+        }
+
+        .repo-nav {
+            display: flex;
+            border-bottom: 1px solid var(--color-border-primary);
+            margin-bottom: 16px;
+        }
+
+        .repo-nav-item {
+            padding: 8px 16px;
+            text-decoration: none;
+            color: var(--color-text-primary);
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+        }
+
+        .repo-nav-item.active {
+            border-bottom-color: #e36209;
+        }
+
+        .repo-content {
+            display: flex;
+        }
+
+        .repo-sidebar {
+            width: 296px;
+            padding-right: 24px;
+        }
+
+        .repo-main {
+            flex-grow: 1;
+        }
+
+        .file-navigator {
+            border: 1px solid var(--color-border-primary);
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .file-header {
+            background-color: #f6f8fa;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--color-border-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .file-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #586069;
+        }
+
+        .file-content {
+            overflow-x: auto;
+            background-color: #f6f8fa;
+        }
+
+        .blob-wrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        table.highlight {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        table.highlight td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .blob-num {
+            width: 1%;
+            min-width: 50px;
+            padding-right: 10px;
+            padding-left: 10px;
+            font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+            font-size: 12px;
+            line-height: 20px;
+            color: rgba(27,31,35,0.3);
+            text-align: right;
+            white-space: nowrap;
+            vertical-align: top;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .blob-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            line-height: 20px;
+            vertical-align: top;
+        }
+
+        .blob-code-inner {
+            overflow: visible;
+            font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+            font-size: 12px;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre;
+        }
+
+        .highlight {
+            background-color: #f6f8fa;
+        }
+
+        .pl-c { color: #6a737d } /* Comment */
+        .pl-s { color: #032f62 } /* String */
+        .pl-k { color: #d73a49 } /* Keyword */
+        .pl-e { color: #6f42c1 } /* Entity */
+        .pl-smi { color: #24292e } /* Storage.Modifier.Inheritance */
+        .pl-ent { color: #22863a } /* Entity.Tag */
+        .pl-c1 { color: #005cc5 } /* Constant.Other */
+        .pl-pds { color: #032f62 } /* String.Double */
+        .pl-sr { color: #032f62 } /* String.Regex */
+
+        .warning-banner {
+            background-color: #fffbdd;
+            border: 1px solid #fffbdd;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+            color: #735c0f;
+            display: flex;
+            align-items: center;
+        }
+
+        .warning-icon {
+            margin-right: 8px;
+            color: #dbab09;
+        }
+
+        .danger-banner {
+            background-color: #ffebe9;
+            border: 1px solid #ffd8d3;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+            color: var(--color-danger-fg);
+            display: flex;
+            align-items: center;
+        }
+
+        .danger-icon {
+            margin-right: 8px;
+        }
+
+        .vulnerability-marker {
+            background-color: #ffebee;
+            border-left: 3px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <svg class="header-logo" height="32" viewBox="0 0 16 16" width="32">
+            <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        <div class="header-search">
+            <input type="text" placeholder="Search or jump to...">
+        </div>
+        <nav class="header-nav">
+            <a href="#">Pull requests</a>
+            <a href="#">Issues</a>
+            <a href="#">Marketplace</a>
+            <a href="#">Explore</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="repo-header">
+            <h1 class="repo-title">Pinewood-Inventory</h1>
+            <div class="repo-meta">
+                <span>Public</span>
+                <span>Updated 2 days ago</span>
+            </div>
+        </div>
+
+        
+        <div class="danger-banner">
+            <svg class="danger-icon" height="16" viewBox="0 0 16 16" width="16">
+                <path fill-rule="evenodd" d="M4.47.22A.75.75 0 015 0h6a.75.75 0 01.53.22l4.25 4.25c.141.14.22.331.22.53v6a.75.75 0 01-.22.53l-4.25 4.25A.75.75 0 0111 16H5a.75.75 0 01-.53-.22L.22 11.53A.75.75 0 010 11V5a.75.75 0 01.22-.53L4.47.22zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5H5.31zM8 4a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 018 4zm0 8a1 1 0 100-2 1 1 0 000 2z"></path>
+            </svg>
+            <div>
+                <strong>Security Alert: The code on this repository was leaked on public repo and reported by Security Researcher</strong>
+            </div>
+        </div>
+        
+
+        <nav class="repo-nav">
+            <a href="#" class="repo-nav-item active">Code</a>
+            <a href="#" class="repo-nav-item">Issues</a>
+            <a href="#" class="repo-nav-item">Pull requests</a>
+            <a href="#" class="repo-nav-item">Actions</a>
+            <a href="#" class="repo-nav-item">Projects</a>
+            <a href="#" class="repo-nav-item">Wiki</a>
+            <a href="#" class="repo-nav-item">Security</a>
+            <a href="#" class="repo-nav-item">Insights</a>
+        </nav>
+
+        <div class="repo-content">
+            <div class="repo-main">
+                <div class="file-navigator">
+                    <div class="file-header">
+                        <span>src/auth/main.go</span>
+                        <div class="file-actions">
+                            <button class="file-btn">Raw</button>
+                            <button class="file-btn">Blame</button>
+                        </div>
+                    </div>
+                    <div class="file-content">
+                        <div class="highlight">
+                            <div class="blob-wrapper">
+                                <table class="highlight">
+                                    <tbody>
+                                        
+                    <tr>
+                        <td class="blob-num" data-line-number="1"></td>
+                        <td class="blob-code"><span class="blob-code-inner"><span class="pl-k">package</span> main</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="2"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="3"></td>
+                        <td class="blob-code"><span class="blob-code-inner"><span class="pl-k">import</span> (</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="4"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&quot;fmt&quot;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="5"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&quot;net/http&quot;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="6"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&quot;os&quot;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="7"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&quot;path/filepath&quot;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="8"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&quot;math/rand&quot;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="9"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&quot;time&quot;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="10"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&quot;strings&quot;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="11"></td>
+                        <td class="blob-code"><span class="blob-code-inner">)</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="12"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="13"></td>
+                        <td class="blob-code"><span class="blob-code-inner"><span class="pl-k">type</span> UserAuth <span class="pl-k">struct</span> {</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="14"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	RemoteAddress <span class="pl-smi">string</span></span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="15"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	BypassCode    <span class="pl-smi">string</span></span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="16"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	AccessLevel   *http.Cookie</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="17"></td>
+                        <td class="blob-code"><span class="blob-code-inner">}</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="18"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="19"></td>
+                        <td class="blob-code"><span class="blob-code-inner"><span class="pl-k">func</span> adminDashboard(w http.ResponseWriter, r *http.Request) {</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="20"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	auth := &amp;UserAuth{}</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="21"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	auth.AccessLevel, _ = r.Cookie(&quot;access_tier&quot;)</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="22"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	auth.RemoteAddress = r.Header.Get(&quot;X-Forwarded-For&quot;)</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="23"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	auth.BypassCode = r.Header.Get(&quot;pinewoodstore-inventory-team-code&quot;)</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="24"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="25"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	fmt.Fprintf(w, `&lt;!DOCTYPE html&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="26"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&lt;html&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="27"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&lt;head&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="28"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&lt;title&gt;Inventory Admin | PinewoodStore&lt;/title&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="29"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&lt;style&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="30"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		body { font-family: &#039;Segoe UI&#039;, sans-serif; margin: 0; padding: 0; background: #f5f7fa; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="31"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.navbar { background: #2c3e50; overflow: hidden; display: flex; align-items: center; padding: 0 2rem; height: 60px; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="32"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.navbar a { color: white; text-align: center; padding: 1rem 1.5rem; text-decoration: none; transition: all 0.3s; line-height: 1; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="33"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.navbar a:hover { background: #3498db; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="34"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.navbar .logo {</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="35"></td>
+                        <td class="blob-code"><span class="blob-code-inner">			font-weight: bold;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="36"></td>
+                        <td class="blob-code"><span class="blob-code-inner">			margin-right: auto;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="37"></td>
+                        <td class="blob-code"><span class="blob-code-inner">			font-size: 1.5rem;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="38"></td>
+                        <td class="blob-code"><span class="blob-code-inner">			letter-spacing: 1px;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="39"></td>
+                        <td class="blob-code"><span class="blob-code-inner">			line-height: 1;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="40"></td>
+                        <td class="blob-code"><span class="blob-code-inner">			color: white; </span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="41"></td>
+                        <td class="blob-code"><span class="blob-code-inner">			user-select: none;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="42"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		}</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="43"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.content { padding: 2rem; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="44"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.inventory-table { width: 100%%; border-collapse: collapse; margin-top: 1rem; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="45"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.inventory-table th, .inventory-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #ddd; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="46"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.inventory-table th { background: #3498db; color: white; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="47"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.inventory-table tr:hover { background: #f1f1f1; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="48"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.footer { text-align: center; padding: 1.5rem; background: #2c3e50; color: white; margin-top: 2rem; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="49"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.stats { display: flex; gap: 1rem; margin: 2rem 0; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="50"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		.stat-card { flex: 1; padding: 1.5rem; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="51"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&lt;/style&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="52"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&lt;/head&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="53"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&lt;body&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="54"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&lt;div class=&quot;navbar&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="55"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		&lt;div class=&quot;logo&quot;&gt;PinewoodStore Inventory&lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="56"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		&lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="57"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		&lt;a href=&quot;/admin&quot;&gt;Dashboard&lt;/a&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="58"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		&lt;a href=&quot;/inventory&quot;&gt;Inventory&lt;/a&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="59"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		&lt;a href=&quot;#&quot;&gt;Reports&lt;/a&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="60"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		&lt;a href=&quot;/contact&quot;&gt;Contact Us&lt;/a&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="61"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="62"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&lt;div class=&quot;content&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="63"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		%s</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="64"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="65"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&lt;div class=&quot;footer&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="66"></td>
+                        <td class="blob-code"><span class="blob-code-inner">		&lt;p&gt;© 2023 PinewoodStore Inventory System - Admin Panel&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="67"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	&lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="68"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&lt;/body&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="69"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&lt;/html&gt;`, checkPrivileges(auth))</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="70"></td>
+                        <td class="blob-code"><span class="blob-code-inner">}</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="71"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="72"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="73"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="74"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="75"></td>
+                        <td class="blob-code"><span class="blob-code-inner"><span class="pl-k">func</span> checkPrivileges(auth *UserAuth) <span class="pl-smi">string</span> {</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="76"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class=<span class="pl-s">"pl-c"</span>>// Case 1: </span></span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="77"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class="pl-k">if</span> auth.AccessLevel == nil {</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="78"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        <span class="pl-k">return</span> `&lt;div class=&quot;access-result&quot; style=&quot;background:#ffebee; padding:1.5rem; border-radius:8px; border-left:4px solid #f44336; margin-top:1rem;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="79"></td>
+                        <td class="blob-code"><span class="blob-code-inner">					&lt;h2 style=&quot;color:#d32f2f; margin-top:0;&quot;&gt;⚠️ Access Denied&lt;/h2&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="80"></td>
+                        <td class="blob-code"><span class="blob-code-inner">					&lt;p&gt;You don&#039;t have administrator privileges.&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="81"></td>
+                        <td class="blob-code"><span class="blob-code-inner">					&lt;p&gt;Please contact the Inventory Team with your employee ID to request access.&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="82"></td>
+                        <td class="blob-code"><span class="blob-code-inner">					&lt;div style=&quot;margin-top:1rem; padding:0.8rem; background:#fce4ec; border-radius:4px;&quot;&gt;&lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="83"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;/div&gt;`</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="84"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="85"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="86"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class=<span class="pl-s">"pl-c"</span>>// Case 2:</span></span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="87"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class="pl-k">if</span> strings.ToLower(auth.AccessLevel.Value) != &quot;administrator&quot; {</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="88"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        <span class="pl-k">return</span> `&lt;div class=&quot;access-result&quot; style=&quot;background:#fff3e0; padding:1.5rem; border-radius:8px; border-left:4px solid #ff9800; margin-top:1rem;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="89"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;h2 style=&quot;color:#ff6f00; margin-top:0;&quot;&gt;⚠️ Insufficient Privileges&lt;/h2&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="90"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;p&gt;Your account doesn&#039;t have admin permissions.&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="91"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;div style=&quot;margin-top:1rem; padding:0.8rem; background:#fff8e1; border-radius:4px;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="92"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;small&gt;Debug Info:&lt;/small&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="93"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;p style=&quot;margin:0.2rem 0; font-family:monospace;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="94"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                    Current cookie: &lt;code&gt;access_tier=<span class="pl-s">` + auth.AccessLevel.Value + `</span>&lt;/code&gt;&lt;br&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="95"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                    Required value: &lt;code&gt;administrator&lt;/code&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="96"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="97"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="98"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;/div&gt;`</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="99"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="100"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="101"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class=<span class="pl-s">"pl-c"</span>>// Extract IP from RemoteAddress</span></span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="102"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    clientIP := &quot;&quot;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="103"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class="pl-k">if</span> ipParts := strings.Split(auth.RemoteAddress, &quot;:&quot;); len(ipParts) &gt; 0 {</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="104"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        clientIP = ipParts[0]</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="105"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="106"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    </span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="107"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="108"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="109"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="110"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class=<span class="pl-s">"pl-c"</span>>// Case 3:</span></span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="111"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class="pl-k">if</span> clientIP != &quot;127.0.0.1&quot; &amp;&amp; clientIP != &quot;localhost&quot; {</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="112"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        <span class="pl-k">return</span> `&lt;div class=&quot;access-result&quot; style=&quot;background:#e3f2fd; padding:1.5rem; border-radius:8px; border-left:4px solid #2196f3; margin-top:1rem;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="113"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;h2 style=&quot;color:#1565c0; margin-top:0;&quot;&gt;🔒 Local Access Required&lt;/h2&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="114"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;p&gt;Admin dashboard requires connection from localhost.&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="115"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;div style=&quot;margin-top:1rem; padding:0.8rem; background:#e1f5fe; border-radius:4px;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="116"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;small&gt;Debug Info:&lt;/small&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="117"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;p style=&quot;margin:0.2rem 0; font-family:monospace;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="118"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                    Detected IP: &lt;code&gt;<span class="pl-s">` + clientIP + `</span>&lt;/code&gt;&lt;br&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="119"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                    Expected: &lt;code&gt;127.0.0.1&lt;/code&gt; or &lt;code&gt;localhost&lt;/code&gt;&lt;br&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="120"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                    &lt;em style=&quot;color:#666;&quot;&gt;(System trusts X-Forwarded-For header)&lt;/em&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="121"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="122"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="123"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;/div&gt;`</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="124"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="125"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="126"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="127"></td>
+                        <td class="blob-code"><span class="blob-code-inner">	<span class=<span class="pl-s">"pl-c"</span>>// Case 4: </span></span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="128"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class="pl-k">if</span> auth.BypassCode != &quot;55569877$$$330003434&quot; {</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="129"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        <span class="pl-k">return</span> `&lt;div class=&quot;access-result&quot; style=&quot;background:#fff3e0; padding:1.5rem; border-radius:8px; border-left:4px solid #ff9800; margin-top:1rem;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="130"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;h2 style=&quot;color:#ff6f00; margin-top:0;&quot;&gt;⚠️ You are not using the correct Team Code&lt;/h2&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="131"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;p&gt;Your account doesn&#039;t have admin permissions.&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="132"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;div style=&quot;margin-top:1rem; padding:0.8rem; background:#fff8e1; border-radius:4px;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="133"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;small&gt;Debug Info:&lt;/small&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="134"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                </span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="135"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="136"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;/div&gt;`</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="137"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    }</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="138"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="139"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    <span class=<span class="pl-s">"pl-c"</span>>// Case 5: </span></span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="140"></td>
+                        <td class="blob-code"><span class="blob-code-inner"><span class="pl-k">return</span> `&lt;div class=&quot;admin-content&quot; style=&quot;margin-top:1rem;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="141"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    &lt;div style=&quot;background:#e8f5e9; padding:1rem; border-radius:6px; border-left:4px solid #4caf50;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="142"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;h2 style=&quot;color:#2e7d32; margin-top:0;&quot;&gt;✅ Admin Access Granted&lt;/h2&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="143"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;div style=&quot;display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="144"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="145"></td>
+                        <td class="blob-code"><span class="blob-code-inner">			    </span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="146"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;p&gt;&lt;strong&gt;Access Tier:&lt;/strong&gt; &lt;code style=&quot;background:#c8e6c9; padding:0.2rem 0.4rem;&quot;&gt;<span class="pl-s">` + auth.AccessLevel.Value + `</span>&lt;/code&gt;&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="147"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;p&gt;&lt;strong&gt;IP Address:&lt;/strong&gt; &lt;code style=&quot;background:#c8e6c9; padding:0.2rem 0.4rem;&quot;&gt;<span class="pl-s">` + auth.RemoteAddress + `</span>&lt;/code&gt;&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="148"></td>
+                        <td class="blob-code"><span class="blob-code-inner">				&lt;p&gt;&lt;strong&gt;Inventory Team Code:&lt;/strong&gt; &lt;code style=&quot;background:#c8e6c9; padding:0.2rem 0.4rem;&quot;&gt;<span class="pl-s">` + auth.BypassCode + `</span>&lt;/code&gt;&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="149"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="150"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="151"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;div style=&quot;font-size:0.9em;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="152"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;p&gt;&lt;strong&gt;Security Note:&lt;/strong&gt;&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="153"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;p&gt;This system trusts client-provided headers <span class="pl-k">for</span> authentication&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="154"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="155"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="156"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="157"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="158"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    &lt;!-- Admin Panel Content --&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="159"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    &lt;div style=&quot;margin-top:2rem;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="160"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;h3 style=&quot;border-bottom:1px solid #ddd; padding-bottom:0.5rem;&quot;&gt;Inventory Controls&lt;/h3&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="161"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;div class=&quot;admin-stats&quot; style=&quot;display:grid; grid-template-columns:repeat(3, 1fr); gap:1rem; margin:1rem 0;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="162"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;div style=&quot;background:#f5f5f5; padding:1rem; border-radius:6px;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="163"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;h4 style=&quot;margin-top:0;&quot;&gt;Total Items&lt;/h4&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="164"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;p style=&quot;font-size:1.5em; margin:0.5rem 0; color:#2e7d32;&quot;&gt;54&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="165"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="166"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;div style=&quot;background:#f5f5f5; padding:1rem; border-radius:6px;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="167"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;h4 style=&quot;margin-top:0;&quot;&gt;Low Stock&lt;/h4&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="168"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;p style=&quot;font-size:1.5em; margin:0.5rem 0; color:#d32f2f;&quot;&gt;7&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="169"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="170"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;div style=&quot;background:#f5f5f5; padding:1rem; border-radius:6px;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="171"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;h4 style=&quot;margin-top:0;&quot;&gt;Categories&lt;/h4&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="172"></td>
+                        <td class="blob-code"><span class="blob-code-inner">                &lt;p style=&quot;font-size:1.5em; margin:0.5rem 0; color:#1976d2;&quot;&gt;12&lt;/p&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="173"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="174"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="175"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="176"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;!-- Existing button --&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="177"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;button style=&quot;background:#2e7d32; color:white; border:none; padding:0.8rem 1.5rem; border-radius:6px; cursor:pointer;&quot;&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="178"></td>
+                        <td class="blob-code"><span class="blob-code-inner">            Manage Inventory</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="179"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        &lt;/button&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="180"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="181"></td>
+                        <td class="blob-code"><span class="blob-code-inner">        </span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="182"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="183"></td>
+                        <td class="blob-code"><span class="blob-code-inner">    &lt;/div&gt;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="184"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&lt;/div&gt;`</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="185"></td>
+                        <td class="blob-code"><span class="blob-code-inner">}</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="186"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="blob-num" data-line-number="187"></td>
+                        <td class="blob-code"><span class="blob-code-inner">&nbsp;</span></td>
+                    </tr>
+                
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+            

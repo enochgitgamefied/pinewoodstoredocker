@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  pinewoodstore-inventory:
+    build: .
+    ports:
+      - "85:85"
+    restart: unless-stopped

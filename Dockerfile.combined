@@ -1,19 +1,41 @@
+# ---------- Go build stage ----------
+FROM golang:1.19-alpine AS go_builder
+
+WORKDIR /goapp
+
+# Copy only go.mod to download dependencies
+COPY inventory/go.mod ./
+RUN go mod download
+
+# Copy full Go source and static files
+COPY inventory/ ./
+
+# Build fully static Go binary to avoid libc issues
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o pinewoodstore-inventory .
+
+# ---------- Final runtime image ----------
 FROM eclipse-temurin:17-jre
 
-# Create directories and set permissions
-RUN mkdir -p /var/log/apps /app && chmod 777 /var/log/apps
+# Create necessary directories and set permissions
+RUN mkdir -p /var/log/apps /app /app/static && chmod -R 777 /var/log/apps
 
 WORKDIR /app
 
-# Copy both applications
+# Copy Java Spring Boot apps
 COPY pinewoodstore.jar .
 COPY diagapp.jar .
 
-# Install required tools and clean up apt cache
+# Copy Go binary and static folder from builder stage
+COPY --from=go_builder /goapp/pinewoodstore-inventory .
+COPY --from=go_builder /goapp/static ./static
+
+# Install useful tools for debugging (optional)
 RUN apt-get update && \
     apt-get install -y procps net-tools && \
     rm -rf /var/lib/apt/lists/*
 
-# Startup command that runs both apps
-CMD bash -c "java -jar diagapp.jar --server.port=84 > /var/log/apps/diagapp.log 2>&1 & \
-    java -jar pinewoodstore.jar > /var/log/apps/pinewoodstore.log 2>&1"
+# Run all three apps on their respective ports
+CMD bash -c "\
+  ./pinewoodstore-inventory > /var/log/apps/inventory.log 2>&1 & \
+  java -jar diagapp.jar --server.port=84 > /var/log/apps/diagapp.log 2>&1 & \
+  java -jar pinewoodstore.jar --server.port=8088 > /var/log/apps/pinewoodstore.log 2>&1"

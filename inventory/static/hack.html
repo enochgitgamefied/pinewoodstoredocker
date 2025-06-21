@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Exfiltration Animation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-indicator {
+            background-color: #222;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        .alert-badge {
+            background-color: #f00;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: none;
+            align-items: center;
+            gap: 5px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .terminal {
+            flex-grow: 1;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .terminal-content {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .command {
+            display: flex;
+            margin-bottom: 5px;
+        }
+
+        .prompt {
+            color: #0f0;
+            margin-right: 10px;
+        }
+
+        .command-input {
+            background: transparent;
+            border: none;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            flex-grow: 1;
+            outline: none;
+        }
+
+        .output {
+            white-space: pre-wrap;
+            line-height: 1.3;
+        }
+
+        .data-transfer {
+            height: 150px;
+            border-top: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .data-packet {
+            position: absolute;
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #0f0;
+            border-radius: 3px;
+            padding: 3px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .progress-section {
+            padding: 15px;
+            background: #111;
+            border-top: 1px solid #333;
+        }
+
+        .progress-container {
+            height: 40px;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 6px;
+            position: relative;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0a0, #0f0);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 4px;
+        }
+
+        .progress-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        .progress-text {
+            font-weight: bold;
+            color: #000;
+            text-shadow: 0 0 2px #0f0;
+            font-size: 16px;
+        }
+
+        .timer {
+            font-family: monospace;
+            color: #0f0;
+            font-size: 16px;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .ip-address {
+            color: #0af;
+        }
+
+        .success {
+            color: #0f0;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        .warning {
+            color: #ff0;
+        }
+
+        .warning-icon {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background-color: #f00;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>root@hacker-terminal:~</div>
+        <div class="alert-badge" id="alert-badge">
+            <span class="warning-icon"></span>
+            INTRUSION DETECTED
+        </div>
+        <div class="status-indicator" id="status-indicator">DATA EXFILTRATION</div>
+    </div>
+
+    <div class="terminal">
+        <div class="terminal-content" id="terminal-content">
+            <!-- Terminal output will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <div class="data-transfer" id="data-transfer">
+        <!-- Data packets will be inserted here by JavaScript -->
+    </div>
+
+    <div class="progress-section">
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="progress-info">
+                <div class="progress-text" id="progress-text">Initializing...</div>
+                <div class="timer" id="timer">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Terminal simulation
+        const terminalContent = document.getElementById('terminal-content');
+        const dataTransfer = document.getElementById('data-transfer');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const timer = document.getElementById('timer');
+        const alertBadge = document.getElementById('alert-badge');
+        const statusIndicator = document.getElementById('status-indicator');
+
+        // Fake commands and outputs
+        const commands = [
+            { cmd: 'scan --target 192.168.1.0/24', output: 'Scanning network...\nFound 12 active hosts\nVulnerable target identified: <span class="ip-address">192.168.1.45</span>' },
+            { cmd: 'exploit --target 192.168.1.45 --vuln CVE-2023-1234', output: 'Exploiting vulnerability CVE-2023-1234...\n<span class="success">Exploit successful! Gained root access</span>' },
+            { cmd: 'search --type sensitive', output: 'Searching for sensitive data...\nFound:\n- customer_database.sql\n- financial_records.xlsx\n- employee_passwords.txt' },
+            { cmd: 'compress --files customer_database.sql financial_records.xlsx employee_passwords.txt --output stolen_data.enc', output: 'Compressing and encrypting data...\n<span class="success">Created encrypted archive: stolen_data.enc (24.7MB)</span>' },
+            { cmd: 'exfiltrate --file stolen_data.enc --destination external-server.com', output: 'Initiating data exfiltration to <span class="ip-address">external-server.com</span>...' }
+        ];
+
+        // File types for data packets
+        const fileTypes = [
+            'customer_data', 'financial', 'passwords', 'emails', 
+            'config', 'backup', 'database', 'logs', 'ssh_keys',
+            'source_code', 'documents', 'images', 'credentials'
+        ];
+
+        // Simulate terminal typing
+        let commandIndex = 0;
+        let progress = 0;
+        let seconds = 0;
+        let timerInterval;
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                timer.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function simulateTerminal() {
+            if (commandIndex >= commands.length) {
+                // Show intrusion detection
+                alertBadge.style.display = 'flex';
+                
+                // Add intrusion message
+                setTimeout(() => {
+                    const intrusionEl = document.createElement('div');
+                    intrusionEl.className = 'output error';
+                    intrusionEl.innerHTML = '<span class="warning-icon"></span> INTRUSION DETECTED! Isolating system...';
+                    terminalContent.appendChild(intrusionEl);
+                    terminalContent.scrollTop = terminalContent.scrollHeight;
+                }, 1000);
+                
+                // Start data transfer animation
+                startDataTransfer();
+                startTimer();
+                return;
+            }
+
+            const command = commands[commandIndex];
+            
+            // Create command element
+            const commandEl = document.createElement('div');
+            commandEl.className = 'command';
+            commandEl.innerHTML = `
+                <div class="prompt">$</div>
+                <div class="command-input">${command.cmd}</div>
+            `;
+            terminalContent.appendChild(commandEl);
+            
+            // Scroll to bottom
+            terminalContent.scrollTop = terminalContent.scrollHeight;
+            
+            // Add output after delay
+            setTimeout(() => {
+                const outputEl = document.createElement('div');
+                outputEl.className = 'output';
+                outputEl.innerHTML = command.output;
+                terminalContent.appendChild(outputEl);
+                
+                // Scroll to bottom
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+                
+                // Move to next command
+                commandIndex++;
+                setTimeout(simulateTerminal, 1500);
+            }, 1000);
+        }
+
+        // Data transfer animation
+        function startDataTransfer() {
+            progressText.textContent = '0%';
+            progressText.style.color = '#000';
+            progressText.style.textShadow = '0 0 2px #0f0';
+            
+            // Update progress bar
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 5;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `${Math.floor(progress)}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    clearInterval(timerInterval);
+                    progressText.textContent = 'COMPLETE';
+                    statusIndicator.textContent = 'EXFILTRATION COMPLETE';
+                    statusIndicator.style.color = '#0f0';
+                    setTimeout(() => {
+                        const completeEl = document.createElement('div');
+                        completeEl.className = 'output success';
+                        completeEl.textContent = 'Data exfiltration complete! 24.7MB transferred successfully.';
+                        terminalContent.appendChild(completeEl);
+                        terminalContent.scrollTop = terminalContent.scrollHeight;
+                    }, 500);
+                }
+            }, 300);
+            
+            // Create data packets
+            const packetInterval = setInterval(() => {
+                if (progress >= 100) {
+                    clearInterval(packetInterval);
+                    return;
+                }
+                
+                createDataPacket();
+            }, 100);
+        }
+
+        function createDataPacket() {
+            const packet = document.createElement('div');
+            packet.className = 'data-packet';
+            
+            // Random file type
+            const fileType = fileTypes[Math.floor(Math.random() * fileTypes.length)];
+            const packetSize = (Math.random() * 5 + 1).toFixed(1);
+            packet.textContent = `${fileType}.dat (${packetSize}KB)`;
+            
+            // Random position and animation
+            const startLeft = Math.random() * 20 + 40;
+            const duration = Math.random() * 3 + 2;
+            
+            packet.style.left = `${startLeft}%`;
+            packet.style.top = '0';
+            packet.style.transition = `top ${duration}s linear`;
+            
+            dataTransfer.appendChild(packet);
+            
+            // Trigger animation
+            setTimeout(() => {
+                packet.style.top = '100%';
+            }, 10);
+            
+            // Remove packet after animation
+            setTimeout(() => {
+                packet.remove();
+            }, duration * 1000);
+        }
+
+        // Start the simulation
+        setTimeout(simulateTerminal, 1000);
+
+        // Blinking cursor effect
+        setInterval(() => {
+            const commands = document.querySelectorAll('.command-input');
+            if (commands.length > 0) {
+                const lastCommand = commands[commands.length - 1];
+                lastCommand.classList.toggle('blink');
+            }
+        }, 500);
+    </script>
+</body>
+</html>
